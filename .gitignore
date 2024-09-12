@@ -1,0 +1,5 @@
+dist
+.env
+node_modules
+TODO.md
+requirements.pdf

@@ -1,0 +1,32 @@
+services:
+  api: # this name must be the same as API_SERVER_HOST_NAME
+    restart: always
+    env_file: .env
+    environment:
+      WHATSAPP_URL: "http://${WHATSAPP_SERVER_HOST_NAME}:8080"
+      API_URL: "http://${API_SERVER_HOST_NAME}:${API_SERVER_PORT}"
+      AUTHENTICATION_API_KEY: ${AUTHENTICATION_API_KEY}
+    ports:
+      - "${API_SERVER_PORT}:${API_SERVER_PORT}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on: 
+      - whatsapp
+    networks:
+      - whatsapp_net
+    volumes:
+      - ./data/api_data/database.db:/home/node/app/data/api_data/database.db
+      
+  whatsapp: # this name must be the same as WHATSAPP_SERVER_HOST_NAME
+    restart: always
+    env_file: .env
+    image: atendai/evolution-api
+    volumes:
+      - ./data/whatsapp_data:/evolution/instances
+    networks:
+      - whatsapp_net
+
+networks:
+  whatsapp_net:
+    enable_ipv6: false # make sure the containers are talking with each other in IPv4

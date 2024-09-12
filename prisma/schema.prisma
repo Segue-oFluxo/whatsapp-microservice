@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/api_data/database.db"
+}
+
+model messages {
+  message_id  Int       @id @default(autoincrement())
+  phone       String
+  instance_id String
+  status      String
+  callback    String
+  eventid     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  instance    instances? @relation(fields: [instance_id], references: [instance_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model instances {
+  instance_id String     @id
+  callback    String
+  token       String
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  messages    messages[]
+}
